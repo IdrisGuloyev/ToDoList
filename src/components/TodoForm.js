@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 function TodoForm(props) {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(props.edit ? props.edit.value : "");
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  });
 
   const handleChange = (e) => {
     setInput(e.target.value);
@@ -15,20 +21,38 @@ function TodoForm(props) {
       text: input,
     });
 
-    setInput('');
+    setInput("");
   };
 
   return (
     <form className="todo-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Вписать задачу"
-        value={input}
-        name="text"
-        className="todo-input"
-        onChange={handleChange}
-      />
-      <button className="todo-button">Добавить задачу</button>
+      {props.edit ? (
+        <>
+          <input
+            type="text"
+            placeholder="Изменить задачу"
+            value={input}
+            name="text"
+            className="todo-input edit"
+            onChange={handleChange}
+            ref={inputRef}
+          />
+          <button className="todo-button edit">Изменить задачу</button>
+        </>
+      ) : (
+        <>
+          <input
+            type="text"
+            placeholder="Вписать задачу"
+            value={input}
+            name="text"
+            className="todo-input"
+            onChange={handleChange}
+            ref={inputRef}
+          />
+          <button className="todo-button">Добавить задачу</button>
+        </>
+      )}
     </form>
   );
 }
